@@ -1,0 +1,9 @@
+import sqlite3
+
+connect=sqlite3.connect("finance_tracker.db")
+cur=connect.cursor()
+cur.execute("CREATE TABLE IF NOT EXISTS Income(Date text,Amount integer,Source text,Aim text)")
+cur.execute("CREATE TABLE IF NOT EXISTS Expense(Date text,Amount integer,Merchant text,Description text)")
+cur.execute("CREATE TABLE IF NOT EXISTS Savings(Date text,Amount integer,Source text,savings integer,Total integer)")
+connect.commit()
+
