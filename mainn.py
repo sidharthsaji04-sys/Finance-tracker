@@ -1,6 +1,7 @@
 import sqlite3
 import streamlit as st
 from datetime import date 
+import pandas as pd
 
 connect=sqlite3.connect("finance_tracker.db")
 cur=connect.cursor()
@@ -39,6 +40,11 @@ class Finance:
             st.session_state.page='home'
             st.rerun()
 
+        if st.button('Income history👇'):
+            df=pd.read_sql_query('SELECT*FROM Income',connect)
+            st.dataframe(df)
+
+
 
     def e_entry(self):
         st.header('EXPENSE ENTRY PAGE')
@@ -60,6 +66,10 @@ class Finance:
         if st.button('Back to home'):
             st.session_state.page='home'
             st.rerun()
+
+        if st.button('Expense history'):
+            df=pd.read_sql_query('SELECT*FROM Expense',connect)
+            st.dataframe(df)
 
 
 def home_page():
@@ -94,7 +104,9 @@ elif st.session_state.page=='in':
 elif st.session_state.page=='ex':
     f.e_entry()
 
-            
+ # add the savings page and add the feature to link the income with savings
+ # create the math for the saving percent from the income
+ # create a dashboard for each containing a graph and total           
     
 
         
