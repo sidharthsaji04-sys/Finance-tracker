@@ -1,5 +1,3 @@
 streamlit
 matplotlib
 pandas
-datetime
-sqlite3
