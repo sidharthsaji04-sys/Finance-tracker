@@ -87,7 +87,11 @@ class Finance:
 
         if st.button('Expense history'):
             df=pd.read_sql_query('SELECT*FROM Expense',connect)
-            st.dataframe(df) 
+            st.dataframe(df)
+
+        cur.execute("SELECT sum(Amount) FROM Expense")
+        total_expense=cur.fetchone()[0]
+        st.metric("Total expense",f"₹{total_expense}")
 
         if st.button('Show graphically'):
                 df=pd.read_sql_query("SELECT Date,sum(Amount) AS Amount from Expense GROUP BY Date ORDER BY Date",connect)
@@ -127,6 +131,21 @@ def home_page():
             if st.button('Savings',use_container_width=True):
                 st.session_state.page='sa'
                 st.rerun()
+
+    st.sidebar.title('Money in a nutshell')
+    cur.execute("SELECT SUM(amount) FROM Income")
+    total_income = cur.fetchone()[0] or 0
+    st.sidebar.metric("Total Income", f"₹{total_income}")
+    cur.execute("SELECT sum(Amount) FROM Expense")
+    total_expense=cur.fetchone()[0] or 0
+    st.sidebar.metric("Total expense",f"₹{total_expense}")
+    cur.execute("SELECT SUM(savings) FROM savings")
+    total_saved = cur.fetchone()[0] or 0
+    st.sidebar.metric("Total Savings", f"₹{total_saved}")
+    remaining_money=(total_income-total_saved)-total_expense
+    st.sidebar.metric("Remaining money",f"₹{remaining_money}")
+    st.sidebar.image('sidebar.jpg',use_container_width=True)
+
 
 
 f=Finance()
