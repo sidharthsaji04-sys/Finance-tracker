@@ -27,7 +27,7 @@ class Finance:
             i_amount=st.number_input('Enter the amount in rupees: ')
             sources=['relatives','bus_fee_balance','random_find','others']
             i_source=st.selectbox('Source',sources)
-            aims=['no idea','fun','book','others','travel']
+            aims=['no idea','fun','book','others','travel','save']
             i_aim=st.selectbox('Enter your plan on how to spend this money: ',aims)
             percentages=[0,10,20,50,80,100]
             i_save_percent=st.selectbox('Saving_percentage',percentages)
@@ -67,7 +67,7 @@ class Finance:
         st.header('EXPENSE ENTRY PAGE')
         with st.form(key='sample',clear_on_submit=True):
                 e_amount=st.number_input('Enter the amount in rupees: ')
-                merchant=['food','travel','fun','clothes','books','others']
+                merchant=['food','travel','fun','clothes','books','Internet','others']
                 e_merchant=st.selectbox('Where you spent the money',merchant)
                 e_description=st.text_input('Add a description: ')
                 e_date=date.today()
