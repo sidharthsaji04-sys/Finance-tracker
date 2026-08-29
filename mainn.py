@@ -108,7 +108,12 @@ class Finance:
         cur.execute("SELECT SUM(savings) FROM savings")
         total_saved = cur.fetchone()[0]
         st.metric("Total Savings", f"₹{total_saved}")
+        if st.button('Back to home'):
+                st.session_state.page='home'
+                st.rerun()
+                
         st.image('dollar.jpg',use_container_width=True)
+
 
 
 def home_page():
