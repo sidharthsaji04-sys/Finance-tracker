@@ -57,7 +57,7 @@ class Finance:
             st.metric("Total Income", f"₹{total_income}")
         if st.button('Show graphically'):
                 df=pd.read_sql_query("SELECT Date,sum(Amount) AS Amount from Income GROUP BY Date ORDER BY Date",connect)
-                plt.plot(df['Date'],df['Amount'])
+                plt.bar(df['Date'],df['Amount'])
                 st.pyplot(plt)
         st.image('dollar.jpg',use_container_width=True)
                 
@@ -111,7 +111,7 @@ class Finance:
         if st.button('Back to home'):
                 st.session_state.page='home'
                 st.rerun()
-                
+
         st.image('dollar.jpg',use_container_width=True)
 
 
