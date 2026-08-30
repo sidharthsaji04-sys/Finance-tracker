@@ -4,3 +4,5 @@ TOOLS used:
 -SQlite
 -streamlit
 -pandas
+
+Built to learn about databases and SQL
