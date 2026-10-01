@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 
 connect=sqlite3.connect("finance_tracker.db")
 cur=connect.cursor()
-cur.execute("CREATE TABLE IF NOT EXISTS Income(Date text DEFAULT CURRENT_DATE,Amount integer,Source text, Save_percent integer,Aim text)")
-cur.execute("CREATE TABLE IF NOT EXISTS Expense(Date text DEFAULT CURRENT_DATE,Amount integer,Merchant text,Description text)")
+cur.execute("CREATE TABLE IF NOT EXISTS Income(Date text DEFAULT CURRENT_DATE,Amount integer,Source text)")
+cur.execute("CREATE TABLE IF NOT EXISTS Expense(Date text DEFAULT CURRENT_DATE,Amount integer,Merchant text)")
 cur.execute("CREATE TABLE IF NOT EXISTS Savings(Date text DEFAULT CURRENT_DATE,Amount integer,Source text,savings integer,Total integer)")
 connect.commit()
 
@@ -27,23 +27,16 @@ class Finance:
             i_amount=st.number_input('Enter the amount in rupees: ')
             sources=['relatives','bus_fee_balance','random_find','others']
             i_source=st.selectbox('Source',sources)
-            aims=['no idea','fun','book','others','travel','save']
-            i_aim=st.selectbox('Enter your plan on how to spend this money: ',aims)
-            percentages=[0,10,20,50,80,100]
-            i_save_percent=st.selectbox('Saving_percentage',percentages)
-            i_balance=i_amount - i_amount*(i_save_percent/100)
-            i_saving=i_amount*(i_save_percent/100)
             i_date=date.today()
-            error=self.validate_entry(i_amount,i_source,i_aim)
+            error=self.validate_entry(i_amount,i_source)
             submit_button=st.form_submit_button(label='Enter')
             if submit_button:
                 if error:
                   st.error(error)
                 else:
-                  cur.execute("INSERT INTO Income(Date,Amount,Source,Save_percent,Aim,Balance) VALUES(?,?,?,?,?,?)",(i_date,i_amount,i_source,i_save_percent,i_aim,i_balance))
-                  cur.execute("INSERT INTO Savings(Date,Amount,Source,savings) VALUES(?,?,?,?)",(i_date,i_amount,i_source,i_saving))
+                  cur.execute("INSERT INTO Income(Date,Amount,Source) VALUES(?,?,?,)",(i_date,i_amount,i_source))
                   connect.commit()
-                  st.write(f'entry saved successfully, added {i_balance}rupees')
+                  st.write(f'entry saved successfully, added {i_amount}rupees')
 
         if st.button('Back to home'):
             st.session_state.page='home'
@@ -67,17 +60,16 @@ class Finance:
         st.header('EXPENSE ENTRY PAGE')
         with st.form(key='sample',clear_on_submit=True):
                 e_amount=st.number_input('Enter the amount in rupees: ')
-                merchant=['food','travel','fun','clothes','books','Internet','others']
-                e_merchant=st.selectbox('Where you spent the money',merchant)
-                e_description=st.text_input('Add a description: ')
+                merchant=['others','food','travel','fun','clothes','books','Internet']
+                e_merchant=st.selectbox('Where you spent the money',merchant, help='Select where you had spent this amount')
                 e_date=date.today()
-                error=self.validate_entry(e_amount,e_merchant,e_description)
+                error=self.validate_entry(e_amount,e_merchant)
                 submit_button=st.form_submit_button(label='Enter')
                 if submit_button:
                     if error:
                         st.error(error)
                     else:
-                        cur.execute("INSERT INTO Expense(Date,Amount,Merchant,Description) VALUES(?,?,?,?)",(e_date,e_amount,e_merchant,e_description))
+                        cur.execute("INSERT INTO Expense(Date,Amount,Merchant) VALUES(?,?,?)",(e_date,e_amount,e_merchant))
                         connect.commit()
                         st.write('Entry saved successfully')
 
@@ -95,31 +87,16 @@ class Finance:
 
         if st.button('Show graphically'):
                 df=pd.read_sql_query("SELECT Date,sum(Amount) AS Amount from Expense GROUP BY Date ORDER BY Date",connect)
-                plt.plot(df['Date'],df['Amount'])
+                plt.bar(df['Date'],df['Amount'])
                 st.pyplot(plt)
 
         st.image('dollar.jpg',use_container_width=True)
 
 
-    def savings(self):
-        st.header('SAVINGS')
-        df=pd.read_sql_query('SELECT*FROM Savings',connect)
-        st.dataframe(df)
-        cur.execute("SELECT SUM(savings) FROM savings")
-        total_saved = cur.fetchone()[0]
-        st.metric("Total Savings", f"₹{total_saved}")
-        if st.button('Back to home'):
-                st.session_state.page='home'
-                st.rerun()
-
-        st.image('dollar.jpg',use_container_width=True)
-
-
-
 def home_page():
     st.header("Sidharth's personal Finance Tracker💸")
 
-    col1,col2,col3=st.columns(3)
+    col1,col2=st.columns(2)
     st.image('money.jpg',use_container_width=True)
 
     with col1:
@@ -132,10 +109,6 @@ def home_page():
             st.session_state.page='ex'
             st.rerun()
 
-    with col3:
-            if st.button('Savings',use_container_width=True):
-                st.session_state.page='sa'
-                st.rerun()
 
     st.sidebar.title('Money in a nutshell')
     cur.execute("SELECT SUM(amount) FROM Income")
@@ -144,10 +117,7 @@ def home_page():
     cur.execute("SELECT sum(Amount) FROM Expense")
     total_expense=cur.fetchone()[0] or 0
     st.sidebar.metric("Total expense",f"₹{total_expense}")
-    cur.execute("SELECT SUM(savings) FROM savings")
-    total_saved = cur.fetchone()[0] or 0
-    st.sidebar.metric("Total Savings", f"₹{total_saved}")
-    remaining_money=(total_income-total_saved)-total_expense
+    remaining_money=(total_income)-total_expense
     st.sidebar.metric("Remaining money",f"₹{remaining_money}")
     st.sidebar.image('sidebar.jpg',use_container_width=True)
 
@@ -163,7 +133,6 @@ elif st.session_state.page=='in':
     f.i_entry()
 elif st.session_state.page=='ex':
     f.e_entry()
-elif st.session_state.page=='sa':
-    f.savings()
+
 
           
