@@ -1,6 +1,16 @@
-A person finance tracker to manage my expenses and start saving money
+Personal Finance Tracker
+A simple web app for tracking income and expenses, built with Python, Streamlit, and SQLite.
 
-TOOLS used:
--SQlite
--streamlit
--pandas
+Features
+Add income and expense entries
+Categories for entries
+Sidebar summary: total income, total expense, and remaining money
+Monthly summaries and charts
+Data stored in a local SQLite database
+
+Tech stack
+Python (OOP)
+Streamlit
+SQLite
+
+This project is work in progress. The core tracker works, but the multi-user part is not finished yet.
