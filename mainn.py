@@ -80,6 +80,15 @@ class Login:
         st.video('videoo.mp4',autoplay=True,muted=True,loop=True)
         
 
+class Finance:
+    def validate_entry(self,amount, *text_fields):
+        if amount <= 0:
+         return "Amount must be greater than 0."
+        for field in text_fields:
+            if field.strip() == "":
+              return "All fields must be filled in. Enter all values again"
+        return None 
+
     def home_page(self):
         st.header("Personal Finance Tracker")
         st.caption("Made by Sidharth")
@@ -111,17 +120,6 @@ class Login:
         st.sidebar.metric("Remaining money", f"Rs{remaining_money}")
         connect.close()
         st.sidebar.image('sidebar.jpg', use_container_width=True)
-                        
-
-
-class Finance:
-    def validate_entry(self,amount, *text_fields):
-        if amount <= 0:
-         return "Amount must be greater than 0."
-        for field in text_fields:
-            if field.strip() == "":
-              return "All fields must be filled in. Enter all values again"
-        return None 
         
     def i_entry(self):
         connect=sqlite3.connect("finance_tracker.db")
@@ -216,7 +214,7 @@ if 'page' not in st.session_state:
 if st.session_state.page=='login':
     l.user_login()
 elif st.session_state.page=='home':
-    l.home_page()
+    f.home_page()
 elif st.session_state.page=='in':
     f.i_entry()
 elif st.session_state.page=='ex':
