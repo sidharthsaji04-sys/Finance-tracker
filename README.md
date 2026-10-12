@@ -13,5 +13,3 @@ Python (OOP)
 Streamlit
 SQLite
 Git / GitHub
-
-This project is in progress. The core tracker works, but the multi-user part is not finished yet.
